@@ -2,7 +2,10 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
+use App\Models\Customer;
+use App\Models\Order;
+use App\Models\Item;
+
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -15,9 +18,12 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        Customer::factory(10000)->create()->each(function ($customer) {
+            $orders = Order::factory(rand(1, 3))->create(['customer_id' => $customer->id]);
+
+            $orders->each(function ($order) {
+                Item::factory(rand(1, 5))->create(['order_id' => $order->id]);
+            });
+        });
     }
 }
